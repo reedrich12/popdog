@@ -2,8 +2,6 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useSession, signOut } from "next-auth/react";
-import TwitterLoginButton from "@/components/TwitterLoginButton";
 import Link from "next/link";
 
 const DOGS = {
@@ -12,28 +10,33 @@ const DOGS = {
 };
 
 export default function PopDog() {
-  const { data: session, status } = useSession();
   const [handle, setHandle] = useState<string>("");
   const [savedHandle, setSavedHandle] = useState<string>("");
   const [mouthOpen, setMouthOpen] = useState(false);
   const [total, setTotal] = useState<number>(0);
+  const [localPops, setLocalPops] = useState<number>(0);
+  const [anonymousId, setAnonymousId] = useState<string>("");
+  const [showShareButton, setShowShareButton] = useState(false);
 
   useEffect(() => {
-    // If logged in with Twitter, use Twitter handle
-    if (session?.user?.handle) {
-      const twitterHandle = session.user.handle;
-      setSavedHandle(twitterHandle);
-      setHandle(twitterHandle);
-      localStorage.setItem("pd.handle", twitterHandle);
-      fetchTotal(twitterHandle);
-    } else {
-      // Fall back to localStorage
-      const h = localStorage.getItem("pd.handle") || "";
-      const bg = localStorage.getItem("pd.bg");
-      if (h) { setSavedHandle(h); setHandle(h); fetchTotal(h); }
-      if (bg) document.documentElement.style.setProperty("--bg", bg);
+    // Initialize anonymous ID if not exists
+    let anonId = localStorage.getItem("pd.anonId");
+    if (!anonId) {
+      anonId = `anon_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      localStorage.setItem("pd.anonId", anonId);
     }
-  }, [session]);
+    setAnonymousId(anonId);
+
+    // Load local pops count
+    const localCount = parseInt(localStorage.getItem("pd.localPops") || "0", 10);
+    setLocalPops(localCount);
+
+    // Load saved handle and background
+    const h = localStorage.getItem("pd.handle") || "";
+    const bg = localStorage.getItem("pd.bg");
+    if (h) { setSavedHandle(h); setHandle(h); fetchTotal(h); }
+    if (bg) document.documentElement.style.setProperty("--bg", bg);
+  }, []);
 
   async function fetchTotal(h: string) {
     const res = await fetch(`/api/me?handle=${h}`);
@@ -52,32 +55,83 @@ export default function PopDog() {
   }
 
   async function pop() {
-    if (!savedHandle) return alert("Enter your X handle first");
-
-    // Optimistic update - increment immediately for better UX
-    setTotal((prev) => prev + 1);
     setMouthOpen(true);
 
-    try {
-      const res = await fetch("/api/pop", { method: "POST", body: JSON.stringify({ handle: savedHandle }) });
-      if (res.ok) {
-        const data = await res.json();
-        // Update with server value to stay in sync
-        setTotal(data.total);
-      } else {
-        // Rollback on error
-        const error = await res.json().catch(() => ({ error: "Unknown error" }));
-        console.error("Pop failed:", error);
-        setTotal((prev) => Math.max(0, prev - 1));
-        alert(`Failed to save pop: ${error.error || "Please try again"}`);
-      }
-    } catch (err) {
-      console.error("Network error:", err);
-      setTotal((prev) => Math.max(0, prev - 1));
-      alert("Network error - pop not saved");
-    }
+    // Always track locally - no database calls during clicking
+    const newLocalCount = localPops + 1;
+    setLocalPops(newLocalCount);
+    localStorage.setItem("pd.localPops", newLocalCount.toString());
 
     setTimeout(() => setMouthOpen(false), 140);
+  }
+
+  async function claimScore() {
+    if (localPops === 0) {
+      alert("No local pops to submit!");
+      return;
+    }
+
+    // If no saved handle, prompt user to enter one
+    if (!savedHandle) {
+      const userHandle = prompt("Enter your X handle to save your score to the leaderboard:");
+      if (!userHandle) return; // User cancelled
+
+      const cleanHandle = userHandle.replace(/^@/, "");
+      const isValid = /^[A-Za-z0-9_]{1,15}$/.test(cleanHandle);
+      if (!isValid) {
+        alert("Invalid X handle. Please use only letters, numbers, and underscores (1-15 characters).");
+        return;
+      }
+
+      // Register the handle
+      const registerRes = await fetch("/api/register", { method: "POST", body: JSON.stringify({ handle: cleanHandle }) });
+      if (!registerRes.ok) {
+        alert("Failed to register handle. Please try again.");
+        return;
+      }
+
+      // Save handle to state and localStorage
+      setSavedHandle(cleanHandle);
+      setHandle(cleanHandle);
+      localStorage.setItem("pd.handle", cleanHandle);
+    }
+
+    const claimedPops = localPops;
+    const handleToUse = savedHandle || handle;
+
+    // Transfer local pops to database using batch API
+    try {
+      const res = await fetch("/api/pop/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ handle: handleToUse, count: localPops })
+      });
+
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({ error: "Unknown error" }));
+        alert(`Failed to submit pops: ${error.error || "Please try again"}`);
+        return;
+      }
+
+      const data = await res.json();
+
+      // Success - clear local pops and update total
+      localStorage.setItem("pd.localPops", "0");
+      setLocalPops(0);
+      setTotal(data.total);
+      setShowShareButton(true);
+      alert(`🎉 Successfully submitted ${claimedPops} pops to @${handleToUse}!\n\nYour score is now on the leaderboard!`);
+    } catch (err) {
+      console.error("Claim error:", err);
+      alert("Failed to submit pops. Please try again.");
+    }
+  }
+
+  function shareOnX() {
+    const score = savedHandle ? total : localPops;
+    const text = `I just got ${score} pops on @popdogcoin_! 🐶\n\nThink you can beat my score? Play now: ${window.location.origin}`;
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    window.open(tweetUrl, "_blank", "width=550,height=420");
   }
 
   return (
@@ -91,7 +145,43 @@ export default function PopDog() {
         <Image src={mouthOpen ? DOGS.open : DOGS.closed} alt="Popdog" width={420} height={420} priority />
       </button>
 
-      <div className="text-2xl rounded-full border px-6 py-2 shadow-sm">Total Pops <b>{total}</b></div>
+      <div className="text-2xl rounded-full border px-6 py-2 shadow-sm">
+        {localPops > 0 ? (
+          <>
+            Local Pops <b>{localPops}</b>
+            <span className="ml-2 text-sm text-gray-500">(not saved)</span>
+          </>
+        ) : savedHandle && total > 0 ? (
+          <>
+            Leaderboard Score <b>{total}</b>
+          </>
+        ) : (
+          <>
+            Total Pops <b>0</b>
+          </>
+        )}
+      </div>
+
+      {localPops > 0 && (
+        <button
+          onClick={claimScore}
+          className="px-6 py-3 bg-green-600 text-white rounded-full font-semibold hover:bg-green-700 transition-colors shadow-md"
+        >
+          💾 Submit {localPops} {localPops === 1 ? "Pop" : "Pops"} to Leaderboard
+        </button>
+      )}
+
+      {savedHandle && total > 0 && localPops === 0 && (
+        <button
+          onClick={shareOnX}
+          className="px-6 py-3 bg-blue-500 text-white rounded-full font-semibold hover:bg-blue-600 transition-colors shadow-md flex items-center gap-2"
+        >
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+          </svg>
+          Share on X
+        </button>
+      )}
 
       <Link
         href="/leaderboard"
@@ -100,23 +190,7 @@ export default function PopDog() {
         🏆 View Leaderboard
       </Link>
 
-      {!session ? (
-        <TwitterLoginButton />
-      ) : (
-        <div className="flex flex-col items-center gap-3">
-          <div className="text-sm text-gray-700">
-            Logged in as <b>@{session.user.handle}</b>
-          </div>
-          <button
-            onClick={() => signOut()}
-            className="text-sm text-red-600 hover:underline"
-          >
-            Logout
-          </button>
-        </div>
-      )}
-
-      {!session && (
+      {!savedHandle && (
         <div className="flex items-center gap-2">
           <input
             value={handle}
@@ -132,6 +206,49 @@ export default function PopDog() {
       <div className="flex items-center gap-2 text-sm text-gray-600">
         <label>Background:</label>
         <input type="color" onChange={(e) => { localStorage.setItem("pd.bg", e.target.value); document.documentElement.style.setProperty("--bg", e.target.value); }} />
+      </div>
+
+      {/* Social Links Footer */}
+      <div className="mt-12 flex flex-col items-center gap-4 pb-8">
+        <h3 className="text-lg font-semibold text-gray-700">Follow POPDOG</h3>
+        <div className="flex items-center gap-6">
+          {/* TikTok */}
+          <a
+            href="https://tiktok.com/@popdogsol"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-700 hover:text-black transition-colors"
+            aria-label="TikTok"
+          >
+            <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+            </svg>
+          </a>
+
+          {/* X (Twitter) */}
+          <a
+            href="https://x.com/popdogcoin_"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-700 hover:text-black transition-colors"
+            aria-label="X (Twitter)"
+          >
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </a>
+
+          {/* DEX Screener */}
+          <a
+            href="https://dexscreener.com/solana/9GabD5D84QZjyMEaien1ZLohpgffGbtjDzNAMwBDs7i6"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-semibold text-gray-800 transition-colors"
+            aria-label="DEX Screener"
+          >
+            📊 DEX Screener
+          </a>
+        </div>
       </div>
     </div>
   );
