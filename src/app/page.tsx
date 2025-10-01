@@ -174,11 +174,11 @@ export default function PopDog() {
         <Image src={mouthOpen ? DOGS.open : DOGS.closed} alt="Popdog" width={420} height={420} priority />
       </button>
 
-      <div className="text-2xl rounded-full border px-6 py-2 shadow-sm">
+      <div className="text-2xl rounded-full bg-white/90 backdrop-blur-sm px-6 py-3 shadow-lg border-2 border-black/20">
         {localPops > 0 ? (
           <>
             Local Pops <b>{localPops}</b>
-            <span className="ml-2 text-sm text-gray-500">(not saved)</span>
+            <span className="ml-2 text-sm text-gray-600">(not saved)</span>
           </>
         ) : savedHandle && total > 0 ? (
           <>
@@ -214,7 +214,7 @@ export default function PopDog() {
 
       <Link
         href="/leaderboard"
-        className="text-lg font-semibold text-blue-600 hover:text-blue-800 underline"
+        className="text-lg font-semibold bg-black/80 text-white hover:bg-black/90 px-6 py-3 rounded-full shadow-lg transition-all backdrop-blur-sm"
       >
         🏆 View Leaderboard
       </Link>
@@ -234,7 +234,7 @@ export default function PopDog() {
 
       {/* Background Selector */}
       <div className="flex flex-col items-center gap-3">
-        <label className="text-sm font-semibold text-gray-700">Choose Background:</label>
+        <label className="text-sm font-semibold bg-black/70 text-white px-4 py-2 rounded-full backdrop-blur-sm shadow-md">Choose Background:</label>
         <div className="flex items-center gap-3">
           {BACKGROUNDS.map((bg) => (
             <button
@@ -258,15 +258,15 @@ export default function PopDog() {
       </div>
 
       {/* Social Links Footer */}
-      <div className="mt-12 flex flex-col items-center gap-4 pb-8">
-        <h3 className="text-lg font-semibold text-gray-700">Follow POPDOG</h3>
+      <div className="mt-12 flex flex-col items-center gap-4 pb-8 bg-black/70 backdrop-blur-sm px-8 py-6 rounded-3xl shadow-xl">
+        <h3 className="text-lg font-semibold text-white">Follow POPDOG</h3>
         <div className="flex items-center gap-6">
           {/* TikTok */}
           <a
             href="https://tiktok.com/@popdogsol"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gray-700 hover:text-black transition-colors"
+            className="text-white hover:text-blue-400 transition-colors"
             aria-label="TikTok"
           >
             <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
@@ -279,7 +279,7 @@ export default function PopDog() {
             href="https://x.com/popdogcoin_"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gray-700 hover:text-black transition-colors"
+            className="text-white hover:text-blue-400 transition-colors"
             aria-label="X (Twitter)"
           >
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -292,7 +292,7 @@ export default function PopDog() {
             href="https://dexscreener.com/solana/9GabD5D84QZjyMEaien1ZLohpgffGbtjDzNAMwBDs7i6"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-semibold text-gray-800 transition-colors"
+            className="px-4 py-2 bg-white/90 hover:bg-white rounded-lg text-sm font-semibold text-gray-800 transition-colors shadow-md"
             aria-label="DEX Screener"
           >
             📊 DEX Screener
