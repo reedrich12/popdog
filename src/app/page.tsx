@@ -67,6 +67,15 @@ export default function PopDog() {
   async function pop() {
     setMouthOpen(true);
 
+    // Play pop sound effect
+    try {
+      const audio = new Audio("/sounds/popdog-pop.wav");
+      audio.volume = 0.5; // 50% volume for comfortable listening
+      audio.play().catch(() => {}); // Ignore autoplay errors
+    } catch (err) {
+      // Silently fail if audio not supported
+    }
+
     // Always track locally - no database calls during clicking
     const newLocalCount = localPops + 1;
     setLocalPops(newLocalCount);
