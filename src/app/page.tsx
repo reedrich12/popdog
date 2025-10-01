@@ -15,6 +15,7 @@ const BACKGROUNDS = [
   { id: "pills", name: "Pills", path: "/backgrounds/pills.jpg" },
   { id: "gold", name: "Gold", path: "/backgrounds/gold.jpg" },
   { id: "flowers", name: "Flowers", path: "/backgrounds/flowers.jpg" },
+  { id: "money", name: "Money", path: "/backgrounds/money.jpg" },
 ];
 
 export default function PopDog() {
