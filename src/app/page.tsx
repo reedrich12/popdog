@@ -84,9 +84,15 @@ export default function PopDog() {
       }
 
       // Register the handle
-      const registerRes = await fetch("/api/register", { method: "POST", body: JSON.stringify({ handle: cleanHandle }) });
+      const registerRes = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ handle: cleanHandle })
+      });
+
       if (!registerRes.ok) {
-        alert("Failed to register handle. Please try again.");
+        const error = await registerRes.json().catch(() => ({ error: "Unknown error" }));
+        alert(`Failed to register handle: ${error.error || "Please try again"}`);
         return;
       }
 
