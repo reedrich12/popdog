@@ -9,6 +9,14 @@ const DOGS = {
   open: "/dog-open.png",
 };
 
+const BACKGROUNDS = [
+  { id: "white", name: "White", path: "/backgrounds/white.png" },
+  { id: "pink", name: "Pink", path: "/backgrounds/pink.png" },
+  { id: "pills", name: "Pills", path: "/backgrounds/pills.jpg" },
+  { id: "gold", name: "Gold", path: "/backgrounds/gold.jpg" },
+  { id: "flowers", name: "Flowers", path: "/backgrounds/flowers.jpg" },
+];
+
 export default function PopDog() {
   const [handle, setHandle] = useState<string>("");
   const [savedHandle, setSavedHandle] = useState<string>("");
@@ -17,6 +25,7 @@ export default function PopDog() {
   const [localPops, setLocalPops] = useState<number>(0);
   const [anonymousId, setAnonymousId] = useState<string>("");
   const [showShareButton, setShowShareButton] = useState(false);
+  const [selectedBackground, setSelectedBackground] = useState<string>("white");
 
   useEffect(() => {
     // Initialize anonymous ID if not exists
@@ -33,9 +42,9 @@ export default function PopDog() {
 
     // Load saved handle and background
     const h = localStorage.getItem("pd.handle") || "";
-    const bg = localStorage.getItem("pd.bg");
+    const bg = localStorage.getItem("pd.background") || "white";
     if (h) { setSavedHandle(h); setHandle(h); fetchTotal(h); }
-    if (bg) document.documentElement.style.setProperty("--bg", bg);
+    setSelectedBackground(bg);
   }, []);
 
   async function fetchTotal(h: string) {
@@ -140,9 +149,22 @@ export default function PopDog() {
     window.open(tweetUrl, "_blank", "width=550,height=420");
   }
 
+  function selectBackground(bgId: string) {
+    setSelectedBackground(bgId);
+    localStorage.setItem("pd.background", bgId);
+  }
+
+  const currentBg = BACKGROUNDS.find(bg => bg.id === selectedBackground) || BACKGROUNDS[0];
+  const backgroundStyle = {
+    backgroundImage: `url(${currentBg.path})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-8"
-         style={{ background: "var(--bg, #ffffff)" }}>
+         style={backgroundStyle}>
       <h1 className="text-5xl font-extrabold tracking-tight">
         <span className="bg-gradient-to-r from-pink-500 to-yellow-400 bg-clip-text text-transparent">POPDOG</span>
       </h1>
@@ -209,9 +231,29 @@ export default function PopDog() {
         </div>
       )}
 
-      <div className="flex items-center gap-2 text-sm text-gray-600">
-        <label>Background:</label>
-        <input type="color" onChange={(e) => { localStorage.setItem("pd.bg", e.target.value); document.documentElement.style.setProperty("--bg", e.target.value); }} />
+      {/* Background Selector */}
+      <div className="flex flex-col items-center gap-3">
+        <label className="text-sm font-semibold text-gray-700">Choose Background:</label>
+        <div className="flex items-center gap-3">
+          {BACKGROUNDS.map((bg) => (
+            <button
+              key={bg.id}
+              onClick={() => selectBackground(bg.id)}
+              className={`relative w-16 h-16 rounded-lg overflow-hidden border-4 transition-all hover:scale-110 ${
+                selectedBackground === bg.id ? "border-blue-500 shadow-lg" : "border-gray-300"
+              }`}
+              aria-label={`Select ${bg.name} background`}
+              title={bg.name}
+            >
+              <Image
+                src={bg.path}
+                alt={bg.name}
+                fill
+                style={{ objectFit: "cover" }}
+              />
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Social Links Footer */}
