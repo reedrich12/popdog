@@ -174,7 +174,7 @@ export default function PopDog() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-8"
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4 sm:gap-6 lg:gap-8 px-4"
          style={backgroundStyle}>
       <Image
         src="/popdog-logo.png"
@@ -182,13 +182,14 @@ export default function PopDog() {
         width={500}
         height={100}
         priority
+        className="w-[300px] sm:w-[400px] lg:w-[500px] h-auto"
       />
 
       <button aria-label="Pop the dog" onClick={pop} className="focus:outline-none active:scale-95 transition">
-        <Image src={mouthOpen ? DOGS.open : DOGS.closed} alt="Popdog" width={420} height={420} priority />
+        <Image src={mouthOpen ? DOGS.open : DOGS.closed} alt="Popdog" width={420} height={420} priority className="w-[280px] sm:w-[350px] lg:w-[420px] h-auto" />
       </button>
 
-      <div className="text-2xl rounded-full bg-white/90 backdrop-blur-sm px-6 py-3 shadow-lg border-2 border-black/20">
+      <div className="text-lg sm:text-xl lg:text-2xl rounded-full bg-white/90 backdrop-blur-sm px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 lg:py-3 shadow-lg border-2 border-black/20">
         {localPops > 0 ? (
           <>
             Local Pops <b>{localPops}</b>
@@ -208,7 +209,7 @@ export default function PopDog() {
       {localPops > 0 && (
         <button
           onClick={claimScore}
-          className="px-6 py-3 bg-green-600 text-white rounded-full font-semibold hover:bg-green-700 transition-colors shadow-md"
+          className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-green-600 text-white rounded-full text-sm sm:text-base font-semibold hover:bg-green-700 transition-colors shadow-md"
         >
           💾 Submit {localPops} {localPops === 1 ? "Pop" : "Pops"} to Leaderboard
         </button>
@@ -217,53 +218,53 @@ export default function PopDog() {
       {savedHandle && total > 0 && localPops === 0 && (
         <button
           onClick={shareOnX}
-          className="px-6 py-3 bg-blue-500 text-white rounded-full font-semibold hover:bg-blue-600 transition-colors shadow-md flex items-center gap-2"
+          className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-500 text-white rounded-full text-sm sm:text-base font-semibold hover:bg-blue-600 transition-colors shadow-md flex items-center justify-center gap-2"
         >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
           </svg>
           Share on X
         </button>
       )}
 
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
         <Link
           href="/leaderboard"
-          className="text-lg font-semibold bg-black/80 text-white hover:bg-black/90 px-6 py-3 rounded-full shadow-lg transition-all backdrop-blur-sm"
+          className="text-base sm:text-lg font-semibold bg-black/80 text-white hover:bg-black/90 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full shadow-lg transition-all backdrop-blur-sm text-center"
         >
           🏆 View Leaderboard
         </Link>
 
         <Link
           href="/about"
-          className="text-lg font-semibold bg-[#d4c4b0] text-black hover:bg-[#c4b4a0] px-8 py-3 rounded-full shadow-lg transition-all"
+          className="text-base sm:text-lg font-semibold bg-[#d4c4b0] text-black hover:bg-[#c4b4a0] px-6 sm:px-8 py-2.5 sm:py-3 rounded-full shadow-lg transition-all text-center"
         >
           ABOUT $POPDOG
         </Link>
       </div>
 
       {!savedHandle && (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
           <input
             value={handle}
             onChange={(e) => setHandle(e.target.value)}
             placeholder="@yourhandle"
-            className="border rounded-lg px-3 py-2"
+            className="border rounded-lg px-3 py-2 w-full sm:w-auto"
             aria-label="X handle"
           />
-          <button onClick={saveHandle} className="rounded-lg px-4 py-2 bg-black text-white">Save</button>
+          <button onClick={saveHandle} className="rounded-lg px-4 py-2 bg-black text-white w-full sm:w-auto">Save</button>
         </div>
       )}
 
       {/* Background Selector */}
-      <div className="flex flex-col items-center gap-3">
-        <label className="text-sm font-semibold bg-black/70 text-white px-4 py-2 rounded-full backdrop-blur-sm shadow-md">Choose Background:</label>
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col items-center gap-2 sm:gap-3">
+        <label className="text-xs sm:text-sm font-semibold bg-black/70 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full backdrop-blur-sm shadow-md">Choose Background:</label>
+        <div className="flex items-center gap-2 sm:gap-3">
           {BACKGROUNDS.map((bg) => (
             <button
               key={bg.id}
               onClick={() => selectBackground(bg.id)}
-              className={`relative w-16 h-16 rounded-lg overflow-hidden border-4 transition-all hover:scale-110 ${
+              className={`relative w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-lg overflow-hidden border-4 transition-all hover:scale-110 ${
                 selectedBackground === bg.id ? "border-blue-500 shadow-lg" : "border-gray-300"
               }`}
               aria-label={`Select ${bg.name} background`}
@@ -281,9 +282,9 @@ export default function PopDog() {
       </div>
 
       {/* Social Links Footer */}
-      <div className="mt-12 flex flex-col items-center gap-4 pb-8 bg-black/70 backdrop-blur-sm px-8 py-6 rounded-3xl shadow-xl">
-        <h3 className="text-lg font-semibold text-white">Follow POPDOG</h3>
-        <div className="flex items-center gap-6">
+      <div className="mt-8 sm:mt-12 flex flex-col items-center gap-3 sm:gap-4 pb-6 sm:pb-8 bg-black/70 backdrop-blur-sm px-6 sm:px-8 py-4 sm:py-6 rounded-3xl shadow-xl w-full sm:w-auto max-w-md">
+        <h3 className="text-base sm:text-lg font-semibold text-white">Follow POPDOG</h3>
+        <div className="flex items-center gap-4 sm:gap-6">
           {/* TikTok */}
           <a
             href="https://tiktok.com/@popdogsol"
@@ -292,7 +293,7 @@ export default function PopDog() {
             className="text-white hover:text-blue-400 transition-colors"
             aria-label="TikTok"
           >
-            <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24">
               <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
             </svg>
           </a>
@@ -305,7 +306,7 @@ export default function PopDog() {
             className="text-white hover:text-blue-400 transition-colors"
             aria-label="X (Twitter)"
           >
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
             </svg>
           </a>
@@ -315,7 +316,7 @@ export default function PopDog() {
             href="https://dexscreener.com/solana/9GabD5D84QZjyMEaien1ZLohpgffGbtjDzNAMwBDs7i6"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 bg-white/90 hover:bg-white rounded-lg text-sm font-semibold text-gray-800 transition-colors shadow-md"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white/90 hover:bg-white rounded-lg text-xs sm:text-sm font-semibold text-gray-800 transition-colors shadow-md"
             aria-label="DEX Screener"
           >
             📊 DEX Screener
