@@ -207,12 +207,6 @@ export default function About() {
             </div>
 
             <div className="text-center space-y-3 sm:space-y-4">
-              <div className="bg-black/40 backdrop-blur-md rounded-3xl p-4 sm:p-6 lg:p-8 shadow-xl space-y-2 sm:space-y-3 text-left">
-                <p className="text-base sm:text-lg lg:text-xl font-semibold text-white">0/0 Tax</p>
-                <p className="text-base sm:text-lg lg:text-xl font-semibold text-white">Liquidity Pool Burnt</p>
-                <p className="text-base sm:text-lg lg:text-xl font-semibold text-white">Immutable</p>
-                <p className="text-base sm:text-lg lg:text-xl font-semibold text-white">100% Community Owned</p>
-              </div>
               <div className="mt-4 sm:mt-6">
                 <p className="text-xs sm:text-sm text-white/80 mb-2 break-all px-2">Contract Address: HYxH3WQHyRAi8z1rMbTzgYDofuXmbkSkWA49YBX4pump</p>
               </div>
