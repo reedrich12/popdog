@@ -178,8 +178,8 @@ export default function PopDog() {
       <Image
         src="/popdog-logo.png"
         alt="POPDOG"
-        width={400}
-        height={120}
+        width={500}
+        height={100}
         priority
       />
 
