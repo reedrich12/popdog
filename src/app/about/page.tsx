@@ -267,7 +267,7 @@ export default function About() {
               </p>
 
               <p className="text-xs sm:text-sm text-gray-400 pt-8 sm:pt-12">
-                © 2024 - Popdog
+                © 2025 - POPDOG
               </p>
             </div>
           </div>
