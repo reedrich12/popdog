@@ -37,9 +37,10 @@ export default function PopDog() {
     }
     setAnonymousId(anonId);
 
-    // Load local pops count
-    const localCount = parseInt(localStorage.getItem("pd.localPops") || "0", 10);
-    setLocalPops(localCount);
+    // Reset local pops on page load to prevent cheating
+    // Users must submit before leaving/refreshing
+    localStorage.setItem("pd.localPops", "0");
+    setLocalPops(0);
 
     // Load saved handle and background
     const h = localStorage.getItem("pd.handle") || "";
