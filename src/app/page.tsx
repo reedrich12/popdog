@@ -175,9 +175,13 @@ export default function PopDog() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-8"
          style={backgroundStyle}>
-      <h1 className="text-5xl font-extrabold tracking-tight">
-        <span className="bg-gradient-to-r from-pink-500 to-yellow-400 bg-clip-text text-transparent">POPDOG</span>
-      </h1>
+      <Image
+        src="/popdog-logo.png"
+        alt="POPDOG"
+        width={400}
+        height={120}
+        priority
+      />
 
       <button aria-label="Pop the dog" onClick={pop} className="focus:outline-none active:scale-95 transition">
         <Image src={mouthOpen ? DOGS.open : DOGS.closed} alt="Popdog" width={420} height={420} priority />
