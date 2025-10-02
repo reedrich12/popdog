@@ -96,10 +96,10 @@ export default function About() {
           {/* Next button */}
           <button
             onClick={() => setCurrentPage(currentPage + 1)}
-            className="absolute bottom-1/2 right-12 translate-y-1/2 z-10 bg-blue-600 hover:bg-blue-700 rounded-full p-6 transition-colors shadow-lg"
+            className="absolute bottom-1/2 right-12 translate-y-1/2 z-10 transition-opacity hover:opacity-100"
             aria-label="Next page"
           >
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 text-white opacity-50 hover:opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
             </svg>
           </button>
@@ -144,10 +144,10 @@ export default function About() {
           {/* Back button */}
           <button
             onClick={() => setCurrentPage(currentPage - 1)}
-            className="absolute bottom-1/2 left-12 translate-y-1/2 z-10 bg-blue-600 hover:bg-blue-700 rounded-full p-6 transition-colors shadow-lg"
+            className="absolute bottom-1/2 left-12 translate-y-1/2 z-10 transition-opacity hover:opacity-100"
             aria-label="Previous page"
           >
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 text-white opacity-50 hover:opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
@@ -155,10 +155,10 @@ export default function About() {
           {/* Next button */}
           <button
             onClick={() => setCurrentPage(currentPage + 1)}
-            className="absolute bottom-1/2 right-12 translate-y-1/2 z-10 bg-blue-600 hover:bg-blue-700 rounded-full p-6 transition-colors shadow-lg"
+            className="absolute bottom-1/2 right-12 translate-y-1/2 z-10 transition-opacity hover:opacity-100"
             aria-label="Next page"
           >
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 text-white opacity-50 hover:opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
             </svg>
           </button>
@@ -223,10 +223,10 @@ export default function About() {
           {/* Back button */}
           <button
             onClick={() => setCurrentPage(currentPage - 1)}
-            className="absolute bottom-1/2 left-12 translate-y-1/2 bg-blue-600 hover:bg-blue-700 rounded-full p-6 transition-colors shadow-lg"
+            className="absolute bottom-1/2 left-12 translate-y-1/2 z-10 transition-opacity hover:opacity-100"
             aria-label="Previous page"
           >
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 text-white opacity-50 hover:opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
@@ -234,10 +234,10 @@ export default function About() {
           {/* Next button */}
           <button
             onClick={() => setCurrentPage(currentPage + 1)}
-            className="absolute bottom-1/2 right-12 translate-y-1/2 bg-blue-600 hover:bg-blue-700 rounded-full p-6 transition-colors shadow-lg"
+            className="absolute bottom-1/2 right-12 translate-y-1/2 z-10 transition-opacity hover:opacity-100"
             aria-label="Next page"
           >
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 text-white opacity-50 hover:opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
             </svg>
           </button>
@@ -275,10 +275,10 @@ export default function About() {
           {/* Back button - last page only has back, no next */}
           <button
             onClick={() => setCurrentPage(currentPage - 1)}
-            className="absolute bottom-1/2 left-12 translate-y-1/2 bg-blue-600 hover:bg-blue-700 rounded-full p-6 transition-colors shadow-lg"
+            className="absolute bottom-1/2 left-12 translate-y-1/2 z-10 transition-opacity hover:opacity-100"
             aria-label="Previous page"
           >
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 text-white opacity-50 hover:opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
