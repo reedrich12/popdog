@@ -207,7 +207,6 @@ export default function About() {
             </div>
 
             <div className="text-center space-y-3 sm:space-y-4">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white drop-shadow-lg">TOKENOMICS</h2>
               <div className="bg-black/40 backdrop-blur-md rounded-3xl p-4 sm:p-6 lg:p-8 shadow-xl space-y-2 sm:space-y-3 text-left">
                 <p className="text-base sm:text-lg lg:text-xl font-semibold text-white">0/0 Tax</p>
                 <p className="text-base sm:text-lg lg:text-xl font-semibold text-white">Liquidity Pool Burnt</p>
