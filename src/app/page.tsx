@@ -27,6 +27,7 @@ export default function PopDog() {
   const [anonymousId, setAnonymousId] = useState<string>("");
   const [showShareButton, setShowShareButton] = useState(false);
   const [selectedBackground, setSelectedBackground] = useState<string>("white");
+  const [storyOpen, setStoryOpen] = useState(false);
 
   useEffect(() => {
     // Initialize anonymous ID if not exists
@@ -313,6 +314,83 @@ export default function PopDog() {
           </a>
         </div>
       </div>
+
+      {/* Story Toggle Button - Fixed on Right Side */}
+      <button
+        onClick={() => setStoryOpen(!storyOpen)}
+        className="fixed right-4 top-1/2 -translate-y-1/2 z-50 bg-black/80 text-white p-4 rounded-full shadow-lg hover:bg-black transition-all backdrop-blur-sm"
+        aria-label="Toggle Story Panel"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {storyOpen ? (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          ) : (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          )}
+        </svg>
+      </button>
+
+      {/* Story Panel - Slides in from Right */}
+      <div
+        className={`fixed right-0 top-0 h-full w-full md:w-[500px] bg-black/95 backdrop-blur-md text-white z-40 transform transition-transform duration-300 ease-in-out overflow-y-auto ${
+          storyOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <div className="p-8 space-y-6">
+          {/* Close Button */}
+          <button
+            onClick={() => setStoryOpen(false)}
+            className="absolute top-4 right-4 text-white/70 hover:text-white"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          <h2 className="text-3xl font-bold text-white">The Origin of $POPDOG</h2>
+
+          <div className="space-y-4 text-gray-200 leading-relaxed">
+            <p>
+              Every memecoin begins with a moment, and for $POPDOG, that moment came from a real internet dog named Mashu. In a{' '}
+              <a
+                href="https://x.com/boku_mashutan/status/1971544393439117428?s=46&t=0vNbvHUy-o7XUCDBg1WVow"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 underline"
+              >
+                post shared on X
+              </a>
+              , a picture of Mashu with her mouth popped wide open in a hilarious expression instantly stood out as meme material. That single post became the seed for what would grow into a new character, a new meme, and a new coin.
+            </p>
+
+            <p>
+              To carry the idea forward, the community refined the image into an original figure, Popdog. No longer just a snapshot of Mashu, Popdog became its own character - bold, unique, and ready to take on the internet in true memecoin fashion.
+            </p>
+
+            <h3 className="text-2xl font-semibold text-white pt-4">The Backstory</h3>
+
+            <p>
+              $POPDOG was first launched by an anonymous creator on Pump.fun. While the project initially saw little development, the community quickly recognized its potential. A community takeover (CTO) followed, breathing new life into the token and giving it direction as a collective effort.
+            </p>
+
+            <p>
+              Today, $POPDOG is a memecoin built on that perfect internet moment. A memecoin driven entirely by culture, community, and creativity. What began as a single post will transformed into something much bigger than we can imagine.
+            </p>
+
+            <p className="text-xl font-semibold text-yellow-400 pt-4">
+              The era of $POPDOG has begun
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Backdrop overlay when panel is open */}
+      {storyOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30"
+          onClick={() => setStoryOpen(false)}
+        />
+      )}
     </div>
   );
 }
