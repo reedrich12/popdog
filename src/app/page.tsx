@@ -281,6 +281,13 @@ export default function PopDog() {
         </div>
       </div>
 
+      {/* Contract Address */}
+      <div className="bg-white/90 backdrop-blur-sm px-4 py-3 rounded-lg shadow-lg border-2 border-black/20 max-w-full overflow-x-auto">
+        <p className="text-xs sm:text-sm text-center font-mono break-all">
+          <span className="font-semibold">Contract Address:</span> HYxH3WQHyRAi8z1rMbTzgYDofuXmbkSkWA49YBX4pump
+        </p>
+      </div>
+
       {/* Social Links Footer */}
       <div className="mt-8 sm:mt-12 flex flex-col items-center gap-3 sm:gap-4 pb-6 sm:pb-8 bg-black/70 backdrop-blur-sm px-6 sm:px-8 py-4 sm:py-6 rounded-3xl shadow-xl w-full sm:w-auto max-w-md">
         <h3 className="text-base sm:text-lg font-semibold text-white">Follow POPDOG</h3>
