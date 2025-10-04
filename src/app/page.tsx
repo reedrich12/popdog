@@ -30,8 +30,11 @@ export default function PopDog() {
 
   // Refs to prevent race conditions during rapid clicking
   const mouthTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const audioCounterRef = useRef<number>(0);
   const isAnimatingRef = useRef<boolean>(false);
+
+  // Audio pool for smooth rapid-click playback
+  const audioPoolRef = useRef<HTMLAudioElement[]>([]);
+  const audioIndexRef = useRef<number>(0);
 
   useEffect(() => {
     // Initialize anonymous ID if not exists
@@ -52,6 +55,15 @@ export default function PopDog() {
     const bg = localStorage.getItem("pd.background") || "white";
     if (h) { setSavedHandle(h); setHandle(h); fetchTotal(h); }
     setSelectedBackground(bg);
+
+    // Initialize audio pool (10 instances for smooth rapid clicking)
+    const audioPool: HTMLAudioElement[] = [];
+    for (let i = 0; i < 10; i++) {
+      const audio = new Audio("/sounds/popdog-pop.wav");
+      audio.volume = 0.5;
+      audioPool.push(audio);
+    }
+    audioPoolRef.current = audioPool;
   }, []);
 
   async function fetchTotal(h: string) {
@@ -76,13 +88,16 @@ export default function PopDog() {
     setLocalPops(newLocalCount);
     localStorage.setItem("pd.localPops", newLocalCount.toString());
 
-    // Throttle audio playback - only play every 3rd click to prevent browser overload
-    audioCounterRef.current++;
-    if (audioCounterRef.current % 3 === 0) {
+    // Play audio using round-robin from the pool
+    if (audioPoolRef.current.length > 0) {
       try {
-        const audio = new Audio("/sounds/popdog-pop.wav");
-        audio.volume = 0.5;
+        const audio = audioPoolRef.current[audioIndexRef.current];
+        // Reset to start if already playing, then play
+        audio.currentTime = 0;
         audio.play().catch(() => {}); // Ignore autoplay errors
+
+        // Move to next audio in pool (round-robin)
+        audioIndexRef.current = (audioIndexRef.current + 1) % audioPoolRef.current.length;
       } catch (err) {
         // Silently fail if audio not supported
       }
