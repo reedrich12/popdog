@@ -22,8 +22,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid handle" }, { status: 400 });
   }
 
-  if (!count || typeof count !== "number" || count <= 0 || count > 10000) {
-    return NextResponse.json({ error: "Invalid count (must be 1-10000)" }, { status: 400 });
+  if (!count || typeof count !== "number" || count <= 0 || count > 1000000) {
+    return NextResponse.json({ error: "Invalid count (must be 1-1000000)" }, { status: 400 });
   }
 
   const supabase = createClient(

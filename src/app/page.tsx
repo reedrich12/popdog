@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 
 const DOGS = {
@@ -27,6 +27,11 @@ export default function PopDog() {
   const [anonymousId, setAnonymousId] = useState<string>("");
   const [showShareButton, setShowShareButton] = useState(false);
   const [selectedBackground, setSelectedBackground] = useState<string>("white");
+
+  // Refs to prevent race conditions during rapid clicking
+  const mouthTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const audioCounterRef = useRef<number>(0);
+  const isAnimatingRef = useRef<boolean>(false);
 
   useEffect(() => {
     // Initialize anonymous ID if not exists
@@ -66,23 +71,42 @@ export default function PopDog() {
   }
 
   async function pop() {
-    setMouthOpen(true);
-
-    // Play pop sound effect
-    try {
-      const audio = new Audio("/sounds/popdog-pop.wav");
-      audio.volume = 0.5; // 50% volume for comfortable listening
-      audio.play().catch(() => {}); // Ignore autoplay errors
-    } catch (err) {
-      // Silently fail if audio not supported
-    }
-
-    // Always track locally - no database calls during clicking
+    // Increment counter immediately
     const newLocalCount = localPops + 1;
     setLocalPops(newLocalCount);
     localStorage.setItem("pd.localPops", newLocalCount.toString());
 
-    setTimeout(() => setMouthOpen(false), 140);
+    // Throttle audio playback - only play every 3rd click to prevent browser overload
+    audioCounterRef.current++;
+    if (audioCounterRef.current % 3 === 0) {
+      try {
+        const audio = new Audio("/sounds/popdog-pop.wav");
+        audio.volume = 0.5;
+        audio.play().catch(() => {}); // Ignore autoplay errors
+      } catch (err) {
+        // Silently fail if audio not supported
+      }
+    }
+
+    // Prevent animation race conditions
+    if (isAnimatingRef.current) {
+      return; // Skip animation if already animating
+    }
+
+    isAnimatingRef.current = true;
+    setMouthOpen(true);
+
+    // Clear any existing timeout to prevent overlapping animations
+    if (mouthTimeoutRef.current) {
+      clearTimeout(mouthTimeoutRef.current);
+    }
+
+    // Set new timeout and store reference
+    mouthTimeoutRef.current = setTimeout(() => {
+      setMouthOpen(false);
+      isAnimatingRef.current = false;
+      mouthTimeoutRef.current = null;
+    }, 140);
   }
 
   async function claimScore() {
